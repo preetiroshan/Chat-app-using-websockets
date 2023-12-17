@@ -8,6 +8,7 @@ function sendMessage(e) {
     const list = document.querySelector("ul");
     const newListItem = document.createElement("li");
     newListItem.innerText = inputVal;
+    console.log("ws readystate", socket.readyState);
     socket.send(inputVal);
     list.appendChild(newListItem);
     inputElem.value = "";
