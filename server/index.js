@@ -1,10 +1,22 @@
 import { WebSocketServer } from "ws";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
-const server = new WebSocketServer({ port: "3000" });
-server.on("connection", (socket) => {
-  socket.on("message", (message) => {
-    const textFromBuffer = Buffer.from(message);
-    console.log(textFromBuffer.toString());
-    socket.send(`${message}`);
+const httpServer = createServer();
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log(`User ${socket.id} connected`);
+  socket.on("message", (data) => {
+    console.log("data on socket", data);
+    io.emit("message", `${socket.id.substring(0, 6)}: ${data}`);
   });
+});
+
+httpServer.listen(3500, () => {
+  console.log("Server listening on port 3500");
 });
