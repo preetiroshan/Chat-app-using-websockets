@@ -5,11 +5,7 @@ function sendMessage(e) {
   const inputElem = document.querySelector("input");
   let inputVal = inputElem.value;
   if (inputVal) {
-    const list = document.querySelector("ul");
-    const newListItem = document.createElement("li");
-    newListItem.innerText = inputVal;
     socket.send(inputVal);
-    list.appendChild(newListItem);
     inputElem.value = "";
   }
   inputElem.focus();
