@@ -6,11 +6,6 @@ function sendMessage(e) {
   let inputVal = inputElem.value;
   if (inputVal) {
     socket.emit("message", inputVal);
-    // const list = document.querySelector("ul");
-    // const newListItem = document.createElement("li");
-    // newListItem.innerText = inputVal;
-    // console.log("ws readystate", socket.readyState);
-    // list.appendChild(newListItem);
     inputElem.value = "";
   }
   inputElem.focus();
