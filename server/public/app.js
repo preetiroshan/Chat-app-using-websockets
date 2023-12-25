@@ -1,14 +1,15 @@
 const socket = io("ws://localhost:3500");
+const msgInput = document.querySelector("input");
+const activityContainer = document.querySelector(".activity");
+
 function sendMessage(e) {
-  console.log("submitting", e);
   e.preventDefault();
-  const inputElem = document.querySelector("input");
-  let inputVal = inputElem.value;
+  let inputVal = msgInput.value;
   if (inputVal) {
     socket.emit("message", inputVal);
-    inputElem.value = "";
+    msgInput.value = "";
   }
-  inputElem.focus();
+  msgInput.focus();
 }
 
 const form = document.querySelector("form");
@@ -21,4 +22,19 @@ socket.on("message", (data) => {
   li.textContent = data;
   const ul = document.querySelector("ul");
   ul.append(li);
+  activityContainer.textContent = "";
+});
+
+msgInput.addEventListener("keypress", () => {
+  socket.emit("activity", socket.id.substring(0, 5));
+});
+
+let activityTimer;
+socket.on("activity", (name) => {
+  activityContainer.textContent = `${name} is typing...`;
+
+  activityTimer = setTimeout(() => {
+    activityContainer.textContent = "";
+    clearTimeout(activityTimer);
+  }, 3000);
 });

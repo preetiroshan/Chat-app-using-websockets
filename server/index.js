@@ -22,10 +22,29 @@ const io = new Server(expressServer, {
   },
 });
 
+// socket.emit => emits event for specific user
+// io.emit => emits event for all users
+// socket.broadcast.emit => emits events for all users EXCEPT the current user
+
 io.on("connection", (socket) => {
-  console.log(`User ${socket.id} connected`);
+  const userId = socket.id.substring(0, 5);
+
+  // On connection - only to user
+  socket.emit("Welcome to chat app");
+
+  // On connection - to all others
+  socket.broadcast.emit("message", `User ${userId} connected`);
+  // socket.on => listens for events on socket
   socket.on("message", (data) => {
     console.log("data on socket", data);
-    io.emit("message", `${socket.id.substring(0, 6)}: ${data}`);
+    io.emit("message", `${userId}: ${data}`);
+  });
+
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("message", `User ${userId} disconnected`);
+  });
+
+  socket.on("activity", (name) => {
+    socket.broadcast.emit("activity", name);
   });
 });
